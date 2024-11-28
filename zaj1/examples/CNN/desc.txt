@@ -1,0 +1,12 @@
+Dense neural network
+
+1. Dataset -- Mnist digits
+2. Task classification of Mnist Digits
+3. Convolutional network with different activations:
+    - input layer -- 794 neurons
+    - 1st layer -- 10, filters 5x5, stride 1,1, tanh
+    - 2nd layer -- MaxPool 2x2, stride 2,2
+    - 3rd layer -- 20, filters 5x5, stride 1,1, tanh
+    - 4th layer -- MaxPool 2x2, stride 2,2
+    - 5th layer -- Dense, 50, tanh
+    - out layer -- 10 neurons softmax activation

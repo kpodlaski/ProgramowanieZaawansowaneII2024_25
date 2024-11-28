@@ -1,0 +1,10 @@
+Dense neural network
+
+1. Dataset -- Mnist digits
+2. Task classification of Mnist Digits
+3. Dense network with different activations:
+    - input layer -- 794 neurons
+    - 1st layer -- 320 neurons tanh activation
+    - 2nd layer -- 240 neurons sigmoid activation
+    - 3rd layer -- 120 neurons relu activation
+    - out layer -- 10 neurons softmax activation

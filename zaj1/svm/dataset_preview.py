@@ -72,9 +72,9 @@ batch_idx, (example_data, example_targets) = next(examples)
 #print(example_data[0][0])
 print(example_data[0].shape)
 print(example_targets[0].shape)
-
+print("Start predicion process")
 pred = clf.predict(example_data.reshape((10000,-1)))
-
+print("Prediction finished")
 fig =plt.figure()
 for i in range(8):
       plt.subplot(2, 4, i + 1)
@@ -95,3 +95,11 @@ plt.title('SVM MNIST Confusion Matrix')
 fig.show()
 
 print("Accuracy:", np.trace(cmatrix)/np.sum(cmatrix))
+print('Saving Confusion Matrix')
+out_file = base_path + 'out/svm-{0}-test-confusion.csv'.format(kernel)
+cmatrix.tofile(out_file, sep=",")
+
+#TODO
+#Precision per class
+#Recall per class
+#Average Precision/Recall (
