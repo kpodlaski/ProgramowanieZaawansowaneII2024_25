@@ -1,11 +1,7 @@
-import os
-
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 import tensorflow as tf
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
-print(tf.__version__)
+
 model = tf.keras.models.Sequential(
     [
         # LENET5 https://engmrk.com/lenet-5-a-classic-cnn-architecture/
@@ -13,7 +9,7 @@ model = tf.keras.models.Sequential(
         tf.keras.layers.Conv2D(10, kernel_size=(5, 5), strides=(1, 1),
                                input_shape=(28, 28, 1), activation=tf.nn.tanh),
         tf.keras.layers.MaxPool2D(pool_size=(2, 2), strides=(2, 2)),
-        tf.keras.layers.Conv2D(60, kernel_size=(5, 5), strides=(1, 1), activation=tf.nn.tanh),
+        tf.keras.layers.Conv2D(20, kernel_size=(5, 5), strides=(1, 1), activation=tf.nn.tanh),
         tf.keras.layers.MaxPool2D(pool_size=(2, 2), strides=(2, 2)),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(50, activation=tf.nn.tanh),  # tf.nn.relu
@@ -43,7 +39,6 @@ history = model.fit(train_inputs, train_labels,
 test_loss, test_acc = model.evaluate(test_inputs, test_labels)
 print('Test acc:',test_acc)
 print('Test loss:', test_loss)
-exit(11)
 fig = plt.figure()
 plt.plot([*range(len(history.history['loss']))], history.history['loss'], color='blue')
 plt.plot([*range(len(history.history['val_loss']))], history.history['val_loss'], color='red')

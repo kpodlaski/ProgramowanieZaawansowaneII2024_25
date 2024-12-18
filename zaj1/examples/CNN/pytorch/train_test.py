@@ -1,6 +1,5 @@
 'based on https://nextjournal.com/gkoehler/pytorch-mnist'
 import torch
-import time
 import torchvision
 import torch.optim as optim
 import matplotlib.pyplot as plt
@@ -13,9 +12,8 @@ print(torch.cuda.device_count(), torch.cuda.current_device(), torch.cuda.get_dev
 data_loader_kwargs ={'pin_memory': True}
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
-
 base_path = "../../../"
-n_epochs = 30
+n_epochs = 3
 batch_size_train = 64
 batch_size_test = 1000
 learning_rate = 0.01
@@ -48,11 +46,8 @@ ml.summary((1,28,28))
 
 
 print("Start training")
-globalT= time.time()
 for epoch in range(1, n_epochs + 1):
   ml.train(epoch, train_loader, test_loader)
-globalT = time.time() - globalT
-print("Total time of training(s):{:.4f}".format(globalT))
 ml.save_model("conv_network")
 
 print("Test on training set:")

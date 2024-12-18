@@ -8,14 +8,14 @@ import matplotlib.pyplot as plt
 from examples.DenseNetwork.pytorch.dense_model import DenseNet
 from common.pytorch.ml_wrapper import ML_Wrapper
 
-print(torch.cuda.device_count(), torch.cuda.current_device(), torch.cuda.get_device_name())
+#print(torch.cuda.device_count(), torch.cuda.current_device(), torch.cuda.get_device_name())
 data_loader_kwargs ={'pin_memory': True}
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 base_path = "../../../"
-n_epochs = 3
+n_epochs = 10
 batch_size_train = 64
-batch_size_test = 1000
+batch_size_test = 64
 learning_rate = 0.01
 momentum = 0.5
 log_interval = 10
@@ -42,6 +42,8 @@ network = DenseNet()
 optimizer = optim.SGD(network.parameters(), lr=learning_rate,
                       momentum=momentum)
 ml = ML_Wrapper(network, optimizer, base_path, device)
+ml.summary((1,28,28))
+
 
 print("Start training")
 for epoch in range(1, n_epochs + 1):
@@ -75,4 +77,4 @@ for i in range(6):
           output.data.max(1, keepdim=True)[1][i].item()))
       plt.xticks([])
       plt.yticks([])
-fig.show()
+plt.show()

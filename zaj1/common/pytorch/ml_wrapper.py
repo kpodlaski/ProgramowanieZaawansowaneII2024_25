@@ -1,5 +1,3 @@
-import time
-
 import torch.nn.functional as F
 import torch
 import matplotlib.pyplot as plt
@@ -19,7 +17,6 @@ class ML_Wrapper():
         self.val_losses = []
 
     def train(self, epoch, data_loader, val_loader = None):
-        t0 = time.time()
         self.network.train()
         train_loss = 0
         for batch_idx, (data, target) in enumerate(data_loader):
@@ -31,9 +28,9 @@ class ML_Wrapper():
             train_loss+= loss.item()
             loss.backward()
             self.optimizer.step()
-        t0 = time.time() - t0
-        print('Train Epoch: {} \tLoss: {:.6f}, epoch time(s):{:.4f}'.format(
-            epoch, train_loss, t0))
+        train_loss = train_loss/len(data_loader.dataset)
+        print('Train Epoch: {} \tLoss: {:.6f}'.format(
+            epoch, train_loss))
         self.train_losses.append(train_loss)
         if (val_loader):
             self.test(val_loader, val_test=True)
@@ -42,16 +39,17 @@ class ML_Wrapper():
         if self.optimizer is None:
             raise Exception("No optimizer is set")
         self.network.eval()
-        test_loss = 0
         correct = 0
         if create_confusion:
             inialized = None
         with torch.no_grad():
-            for data, target in data_loader:
+            test_loss = 0
+            for batch_idx, (data, target) in enumerate(data_loader):
                 data = data.to(self.device)
                 target = target.to(self.device)
                 output = self.network(data)
-                test_loss += F.nll_loss(output, target).item()
+                loss = F.nll_loss(output, target)
+                test_loss += loss.item()
                 pred = output.data.max(1, keepdim=True)[1]
                 correct += pred.eq(target.data.view_as(pred)).sum()
                 if create_confusion:
@@ -63,7 +61,9 @@ class ML_Wrapper():
                         results = np.concatenate((results,pred.cpu().detach().numpy().reshape(-1)), axis = None)
                         expected = np.concatenate((expected,target.cpu().detach().numpy().reshape(-1)), axis = None)
         if (val_test):
+            test_loss = test_loss/len(data_loader.dataset)
             self.val_losses.append(test_loss)
+            print ("Test loss:",test_loss)
         else:
             print('\nTest set: Avg. loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)'.format(
                 test_loss, correct, len(data_loader.dataset),
