@@ -12,7 +12,7 @@ from examples.Autoencoders.pytorch.cynn_model import AutoencoderNet
 
 
 class AutoEncoderWrapper():
-    def __init__(self, network, optimizer, base_path, device, noise_factor=0.3):
+    def __init__(self, network, optimizer, base_path, device, noise_factor=0.2):
         self.network=network
         self.noise_factor=noise_factor
         self.network.to(device)
@@ -46,7 +46,7 @@ class AutoEncoderWrapper():
         return noisy
 
     def save_model(self, fname):
-        torch.save(self.network.state_dict(), self.base_path + '/out/{}_{}_model.pth'.format(fname, self.noise_factor))
+        torch.save(self.network.state_dict(), self.base_path + '/out/{}_{}_c{}_model.pth'.format(fname, self.noise_factor, self.network.code_dim))
 
     @staticmethod
     def get_model_path(base_path, file_name ):
@@ -80,7 +80,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(device)
 base_path = "../../../"
 n_epochs = 30
-batch_size_train = 256
+batch_size_train = 128
 batch_size_test = 1000
 learning_rate = 0.001
 momentum = 0.5
@@ -104,11 +104,11 @@ test_loader = torch.utils.data.DataLoader(
                                  (0.1307,), (0.3081,))
                              ])),
     batch_size=batch_size_test, shuffle=True, **data_loader_kwargs)
-code_dim = 4
+code_dim = 12
 network = AutoencoderNet(code_dim)
 optimizer = torch.optim.Adam(network.parameters(), lr=learning_rate, weight_decay=1e-05)
 
-model_file_name = "autoencoder_model_noise.2.pth"
+model_file_name = "_autoencoder_0.3_c12_model.pth"
 
 
 ml = AutoEncoderWrapper(network, optimizer, base_path, device)
@@ -134,6 +134,8 @@ with torch.no_grad():
   example_data =example_data.to(device)
   network.to(device)
   output = ml.network(example_data)
+    #ENCODOWANIE
+    #ml.network.encoder(example_data)
 
 example_data =example_data.cpu()
 output_data = output.data.cpu()

@@ -8,6 +8,7 @@ from examples.Autoencoders.pytorch.Encoder import Encoder
 class AutoencoderNet(nn.Module):
     def __init__(self, encoder_dim):
         super(AutoencoderNet, self).__init__()
+        self.code_dim = encoder_dim
         self.encoder = Encoder(encoded_space_dim=encoder_dim,fc2_input_dim=128)
         self.decoder = Decoder(encoded_space_dim=encoder_dim,fc2_input_dim=128)
         self.params_to_optimize = [

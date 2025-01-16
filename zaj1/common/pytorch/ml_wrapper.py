@@ -16,7 +16,7 @@ class ML_Wrapper():
         self.train_losses = []
         self.val_losses = []
 
-    def train(self, epoch, data_loader, val_loader = None):
+    def train(self, epoch, data_loader, val_loader = None, loss_fun = F.nll_loss):
         self.network.train()
         train_loss = 0
         for batch_idx, (data, target) in enumerate(data_loader):
@@ -24,7 +24,7 @@ class ML_Wrapper():
             target = target.to(self.device)
             self.optimizer.zero_grad()
             output = self.network(data)
-            loss = F.nll_loss(output, target)
+            loss = loss_fun(output, target)
             train_loss+= loss.item()
             loss.backward()
             self.optimizer.step()
@@ -35,7 +35,7 @@ class ML_Wrapper():
         if (val_loader):
             self.test(val_loader, val_test=True)
 
-    def test(self, data_loader, val_test=False, create_confusion=False):
+    def test(self, data_loader, val_test=False, create_confusion=False, loss_fun = F.nll_loss):
         if self.optimizer is None:
             raise Exception("No optimizer is set")
         self.network.eval()
@@ -48,7 +48,7 @@ class ML_Wrapper():
                 data = data.to(self.device)
                 target = target.to(self.device)
                 output = self.network(data)
-                loss = F.nll_loss(output, target)
+                loss = loss_fun(output, target)
                 test_loss += loss.item()
                 pred = output.data.max(1, keepdim=True)[1]
                 correct += pred.eq(target.data.view_as(pred)).sum()
